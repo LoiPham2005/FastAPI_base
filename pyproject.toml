@@ -1,0 +1,20 @@
+[project]
+name = "sports-booking"
+version = "0.1.0"
+description = "Sports Booking API using FastAPI"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "pydantic[email]",
+    "pydantic-settings",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "alembic",
+    "python-multipart",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
