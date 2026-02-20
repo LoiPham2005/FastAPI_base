@@ -5,20 +5,79 @@ Cấu trúc cơ bản cho dự án FastAPI của bạn.
 ## Cấu trúc thư mục
 
 ```text
-fast_api/
+fast_api_base/
 ├── app/
-│   ├── main.py          # Điểm khởi đầu của ứng dụng
-│   ├── api/             # Các API routes
-│   │   └── router.py
-│   ├── core/            # Cấu hình hệ thống (Settings, security, etc)
-│   │   └── config.py
-│   ├── models/          # Database models (SQLAlchemy, Tortoise, etc)
-│   ├── schemas/         # Pydantic models (Data validation)
-│   └── crud/            # Create, Read, Update, Delete logic (Tùy chọn)
-├── .env                 # Biến môi trường
-├── .gitignore
-├── requirements.txt
-└── README.md
+│   ├── main.py
+│   ├── config.py
+│   ├── dependencies.py
+│   │
+│   ├── core/
+│   │   ├── security.py
+│   │   ├── exceptions.py
+│   │   ├── middleware.py
+│   │   └── base_crud.py        # Generic CRUD dùng chung
+│   │
+│   ├── db/
+│   │   ├── session.py
+│   │   └── base.py
+│   │
+│   ├── features/               # ← Đây là thay đổi chính
+│   │   ├── auth/
+│   │   │   ├── router.py
+│   │   │   ├── schemas.py
+│   │   │   ├── service.py
+│   │   │   └── dependencies.py
+│   │   │
+│   │   ├── users/
+│   │   │   ├── router.py
+│   │   │   ├── models.py
+│   │   │   ├── schemas.py
+│   │   │   ├── crud.py
+│   │   │   └── service.py
+│   │   │
+│   │   ├── venues/
+│   │   │   ├── router.py
+│   │   │   ├── models.py
+│   │   │   ├── schemas.py
+│   │   │   ├── crud.py
+│   │   │   └── service.py
+│   │   │
+│   │   ├── bookings/
+│   │   │   ├── router.py
+│   │   │   ├── models.py
+│   │   │   ├── schemas.py
+│   │   │   ├── crud.py
+│   │   │   ├── service.py
+│   │   │   └── tasks.py        # Celery tasks riêng cho booking
+│   │   │
+│   │   └── payments/
+│   │       ├── router.py
+│   │       ├── models.py
+│   │       ├── schemas.py
+│   │       ├── crud.py
+│   │       ├── service.py
+│   │       └── tasks.py
+│   │
+│   ├── workers/                # Celery workers
+│   │   ├── celery_app.py
+│   │   └── beat_schedule.py    # Cronjob: nhắc giờ, hủy booking...
+│   │
+│   └── utils/
+│       ├── email.py
+│       ├── sms.py
+│       └── storage.py          # Upload ảnh sân
+│
+├── tests/
+│   ├── conftest.py
+│   └── features/               # Test mirror theo feature
+│       ├── test_auth.py
+│       ├── test_bookings.py
+│       └── test_payments.py
+│
+├── alembic/
+├── docker-compose.yml          # app + db + redis + celery
+├── Dockerfile
+└── .env
 ```
 
 ## Cách chạy dự án
