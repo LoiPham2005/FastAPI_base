@@ -1,8 +1,8 @@
 from typing import Optional
 from sqlalchemy.orm import Session
-from app.crud.base import CRUDBase
-from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.core.base_crud import CRUDBase
+from .models import User
+from .schemas import UserCreate, UserUpdate
 from app.core.security import get_password_hash
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):

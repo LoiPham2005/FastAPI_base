@@ -1,5 +1,5 @@
 from app.core.security import verify_password, get_password_hash, create_access_token
-from app.crud.user import user as crud_user
+from app.features.users.crud import user as crud_user
 from sqlalchemy.orm import Session
 
 class AuthService:
