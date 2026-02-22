@@ -1,12 +1,16 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from app.db.base import Base
+from sqlmodel import SQLModel, Field
+from datetime import datetime
+from typing import Optional
 
-class User(Base):
+class UserBase(SQLModel):
+    email: str = Field(unique=True, index=True)
+    full_name: str
+    is_active: bool = Field(default=True)
+    is_superuser: bool = Field(default=False)
+
+class User(UserBase, table=True):
     __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    is_active = Column(Boolean(), default=True)
-    is_superuser = Column(Boolean(), default=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    hashed_password: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None

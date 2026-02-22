@@ -1,11 +1,23 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.config import settings
 from app.api.v1.router import api_router
+from app.db.init_db import init_db
+from app.config import settings
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize DB tables during development
+    if settings.DEBUG:
+        await init_db()
+    yield
 
 def get_application() -> FastAPI:
-    _app = FastAPI(title=settings.PROJECT_NAME)
+    _app = FastAPI(
+        title=settings.PROJECT_NAME,
+        version="1.0.0",
+        lifespan=lifespan,
+    )
 
     _app.add_middleware(
         CORSMiddleware,
@@ -17,11 +29,14 @@ def get_application() -> FastAPI:
 
     # API Routers
     _app.include_router(api_router, prefix=settings.API_V1_STR)
+    
+    from app.core.middleware import setup_middleware
+    setup_middleware(_app)
 
     return _app
 
 app = get_application()
 
 @app.get("/")
-def root():
-    return {"message": "Welcome to Sports Booking API"}
+async def root():
+    return {"message": "Welcome to Sports Booking API (SQLModel Optimized)"}

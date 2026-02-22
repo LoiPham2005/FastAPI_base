@@ -1,5 +1,5 @@
 import time
-from fastapi import Request
+from fastapi import Request, FastAPI
 
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
@@ -7,3 +7,6 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.time() - start_time
     response.headers["X-Process-Time"] = str(process_time)
     return response
+
+def setup_middleware(app: FastAPI):
+    app.middleware("http")(add_process_time_header)

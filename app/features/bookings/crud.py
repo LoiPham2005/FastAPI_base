@@ -1,8 +1,8 @@
-from app.core.base_crud import CRUDBase
+from app.core.base_crud import BaseCRUD
 from .models import Booking
-from .schemas import BookingCreate
+from .schemas import BookingCreate, BookingUpdate
 
-class CRUDBooking(CRUDBase[Booking, BookingCreate, BookingCreate]):
+class CRUDBooking(BaseCRUD[Booking, BookingCreate, BookingUpdate]):
     pass
 
 booking = CRUDBooking(Booking)

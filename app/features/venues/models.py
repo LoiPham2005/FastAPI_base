@@ -1,10 +1,24 @@
-from sqlalchemy import Column, Integer, String, Float
-from app.db.base import Base
+from sqlmodel import SQLModel, Field
+from typing import Optional
 
-class Venue(Base):
+class VenueBase(SQLModel):
+    name: str = Field(index=True)
+    address: str
+    description: Optional[str] = None
+    capacity: int
+
+class Venue(VenueBase, table=True):
     __tablename__ = "venues"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    address = Column(String)
-    latitude = Column(Float)
-    longitude = Column(Float)
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+class VenueCreate(VenueBase):
+    pass
+
+class VenueUpdate(SQLModel):
+    name: Optional[str] = None
+    address: Optional[str] = None
+    description: Optional[str] = None
+    capacity: Optional[int] = None
+
+class VenueRead(VenueBase):
+    id: int

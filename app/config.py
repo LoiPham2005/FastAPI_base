@@ -6,7 +6,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # Database
-    DATABASE_URL: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/sports_booking"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/sports_booking"
+    DEBUG: bool = True
     
     # Security
     SECRET_KEY: str = "your_secret_key_here"

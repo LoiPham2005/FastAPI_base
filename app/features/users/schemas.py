@@ -1,21 +1,21 @@
-from pydantic import BaseModel, EmailStr
+from sqlmodel import SQLModel
 from typing import Optional
 
-class UserBase(BaseModel):
-    email: Optional[EmailStr] = None
-    full_name: Optional[str] = None
-    is_active: Optional[bool] = True
-    is_superuser: bool = False
-
-class UserCreate(UserBase):
-    email: EmailStr
+class UserCreate(SQLModel):
+    email: str
+    full_name: str
     password: str
+    is_superuser: Optional[bool] = False
 
-class UserUpdate(UserBase):
+class UserUpdate(SQLModel):
+    full_name: Optional[str] = None
+    email: Optional[str] = None
+    is_active: Optional[bool] = None
     password: Optional[str] = None
 
-class User(UserBase):
-    id: Optional[int] = None
-
-    class Config:
-        from_attributes = True
+class UserRead(SQLModel):
+    id: int
+    email: str
+    full_name: str
+    is_active: bool
+    is_superuser: bool

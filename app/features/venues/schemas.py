@@ -1,18 +1,21 @@
-from pydantic import BaseModel
+from sqlmodel import SQLModel
 from typing import Optional
 
-class VenueBase(BaseModel):
+class VenueCreate(SQLModel):
     name: str
     address: str
+    description: Optional[str] = None
+    capacity: int
 
-class VenueCreate(VenueBase):
-    pass
-
-class VenueUpdate(BaseModel):
+class VenueUpdate(SQLModel):
     name: Optional[str] = None
     address: Optional[str] = None
+    description: Optional[str] = None
+    capacity: Optional[int] = None
 
-class Venue(VenueBase):
+class VenueRead(SQLModel):
     id: int
-    class Config:
-        from_attributes = True
+    name: str
+    address: str
+    description: Optional[str] = None
+    capacity: int

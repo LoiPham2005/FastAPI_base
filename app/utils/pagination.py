@@ -1,20 +1,18 @@
 from typing import Generic, TypeVar, List
-from pydantic import BaseModel
+from sqlmodel import SQLModel
 
 T = TypeVar("T")
 
-class Page(BaseModel, Generic[T]):
+class PaginatedResponse(SQLModel, Generic[T]):
     items: List[T]
     total: int
     page: int
     size: int
 
-def paginate(items: List[T], page: int, size: int) -> Page[T]:
-    start = (page - 1) * size
-    end = start + size
-    return Page(
-        items=items[start:end],
-        total=len(items),
+def paginate(items: List[T], total: int, page: int, size: int) -> PaginatedResponse[T]:
+    return PaginatedResponse(
+        items=items,
+        total=total,
         page=page,
         size=size
     )

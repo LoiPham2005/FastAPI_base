@@ -1,44 +1,41 @@
-from typing import Any, Generic, List, Optional, Type, TypeVar, Dict, Union
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
-from app.db.base import Base
+from typing import Generic, TypeVar, Type, Optional, List, Any
+from sqlmodel import SQLModel, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-ModelType = TypeVar("ModelType", bound=Base)
-CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
-UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
+ModelType = TypeVar("ModelType", bound=SQLModel)
+CreateSchemaType = TypeVar("CreateSchemaType", bound=SQLModel)
+UpdateSchemaType = TypeVar("UpdateSchemaType", bound=SQLModel)
 
-class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+class BaseCRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
-    def get(self, db: Session, id: Any) -> Optional[ModelType]:
-        return db.query(self.model).filter(self.model.id == id).first()
+    async def get(self, session: AsyncSession, id: Any) -> Optional[ModelType]:
+        return await session.get(self.model, id)
 
-    def get_multi(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[ModelType]:
-        return db.query(self.model).offset(skip).limit(limit).all()
+    async def get_all(self, session: AsyncSession, skip: int = 0, limit: int = 100) -> List[ModelType]:
+        result = await session.execute(select(self.model).offset(skip).limit(limit))
+        return result.scalars().all()
 
-    def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
-        db_obj = self.model(**obj_in.model_dump())
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
+    async def create(self, session: AsyncSession, obj_in: CreateSchemaType) -> ModelType:
+        obj = self.model.model_validate(obj_in)
+        session.add(obj)
+        await session.commit()
+        await session.refresh(obj)
+        return obj
+
+    async def update(self, session: AsyncSession, db_obj: ModelType, obj_in: UpdateSchemaType) -> ModelType:
+        data = obj_in.model_dump(exclude_unset=True)
+        for key, value in data.items():
+            setattr(db_obj, key, value)
+        session.add(db_obj)
+        await session.commit()
+        await session.refresh(db_obj)
         return db_obj
 
-    def update(self, db: Session, *, db_obj: ModelType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
-        if isinstance(obj_in, dict):
-            update_data = obj_in
-        else:
-            update_data = obj_in.model_dump(exclude_unset=True)
-        for field in update_data:
-            if hasattr(db_obj, field):
-                setattr(db_obj, field, update_data[field])
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
-
-    def remove(self, db: Session, *, id: int) -> ModelType:
-        obj = db.query(self.model).get(id)
-        db.delete(obj)
-        db.commit()
+    async def delete(self, session: AsyncSession, id: Any) -> Optional[ModelType]:
+        obj = await session.get(self.model, id)
+        if obj:
+            await session.delete(obj)
+            await session.commit()
         return obj

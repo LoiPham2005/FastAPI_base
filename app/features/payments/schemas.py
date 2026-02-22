@@ -1,11 +1,17 @@
-from pydantic import BaseModel
+from sqlmodel import SQLModel
+from typing import Optional
+from app.constants.enums import PaymentStatus
 
-class PaymentCreate(BaseModel):
+class PaymentCreate(SQLModel):
     booking_id: int
     amount: float
 
-class Payment(PaymentCreate):
+class PaymentUpdate(SQLModel):
+    status: Optional[PaymentStatus] = None
+
+class PaymentRead(SQLModel):
     id: int
-    status: str
-    class Config:
-        from_attributes = True
+    booking_id: int
+    amount: float
+    status: PaymentStatus
+    created_at: datetime

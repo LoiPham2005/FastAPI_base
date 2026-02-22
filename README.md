@@ -107,6 +107,21 @@ fast_api_base/
   docker-compose up --build
   ```
 
+
+
+
+Bước tiếp theo bạn cần làm:
+Cài đặt môi trường mới:
+
+pip install -r requirements.txt
+
+Khởi tạo Database: Đảm bảo DATABASE_URL trong .env sử dụng driver postgresql+asyncpg://. Khi bạn chạy uvicorn app.main:app --reload, hệ thống sẽ tự động tạo các bảng dựa trên models nếu bạn đang ở chế độ DEBUG=True.
+Migrations: Nếu bạn muốn dùng Alembic chuyên nghiệp:
+
+alembic revision --autogenerate -m "Initial sync"
+alembic upgrade head
+
+
 4. **Truy cập Documentation:**
    - Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
    - Redoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
