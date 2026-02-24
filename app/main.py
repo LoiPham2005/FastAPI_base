@@ -10,6 +10,10 @@ async def lifespan(app: FastAPI):
     # Initialize DB tables during development
     if settings.DEBUG:
         await init_db()
+    
+    from app.core.bootstrap import log_app_startup
+    log_app_startup()
+    
     yield
 
 def get_application() -> FastAPI:
