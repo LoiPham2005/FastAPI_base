@@ -31,7 +31,13 @@ def get_application() -> FastAPI:
     _app.include_router(api_router, prefix=settings.API_V1_STR)
     
     from app.core.middleware import setup_middleware
+    from app.core.exceptions import setup_exceptions
+    from app.core.logging import setup_logging
+    
+    # Initialize Core modules
+    setup_logging()
     setup_middleware(_app)
+    setup_exceptions(_app)
 
     return _app
 

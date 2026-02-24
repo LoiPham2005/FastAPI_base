@@ -1,15 +1,16 @@
-from sqlmodel import SQLModel
+from datetime import datetime
 from typing import Optional
+from app.core.base_schema import BaseSchema
 from app.constants.enums import PaymentStatus
 
-class PaymentCreate(SQLModel):
+class PaymentCreate(BaseSchema):
     booking_id: int
     amount: float
 
-class PaymentUpdate(SQLModel):
+class PaymentUpdate(BaseSchema):
     status: Optional[PaymentStatus] = None
 
-class PaymentRead(SQLModel):
+class PaymentRead(BaseSchema):
     id: int
     booking_id: int
     amount: float

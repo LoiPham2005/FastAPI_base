@@ -1,12 +1,12 @@
-from pydantic import BaseModel
 from typing import Optional
+from app.core.base_schema import BaseSchema
 
-class Token(BaseModel):
+class Token(BaseSchema):
     access_token: str
     token_type: str
 
-class TokenPayload(BaseModel):
+class TokenPayload(BaseSchema):
     sub: Optional[int] = None
 
-class Msg(BaseModel):
+class Msg(BaseSchema):
     msg: str

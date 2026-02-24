@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/sports_booking"
     DEBUG: bool = True
     
+    # Logging
+    LOG_LEVEL: str = "INFO"
+    LOG_FILES_DIR: str = "logs"
+    
     # Security
     SECRET_KEY: str = "your_secret_key_here"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
